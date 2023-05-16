@@ -8,14 +8,14 @@
     "skipLibCheck": false,
     "lib": ["ES2021"],
     "paths": {
-      "@api": ["src/api"],
-      "@api/*": ["src/api/*"],
-      "@modules": ["src/modules"],
-      "@modules/*": ["src/modules/*"],
-      "@common": ["src/common"],
-      "@common/*": ["src/common/*"],
-      "@database": ["src/database"],
-      "@extensions/*": ["src/extensions/*"]
+      "@business": ["src/business"],
+      "@business/*": ["src/business/*"],
+      "@data": ["src/data"],
+      "@data/*": ["src/data/*"],
+      "@extensions/*": ["src/extensions/*"],
+      "@presentation": ["src/presentation"],
+      "@presentation/*": ["src/presentation/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "ts-node": {

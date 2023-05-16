@@ -20,14 +20,14 @@ module.exports = {
   ],
   // path aliases from tsconfig.json
   moduleNameMapper: {
-    '^@api$': '<rootDir>/src/api',
-    '^@api/(.*)$': '<rootDir>/src/api/$1',
-    '^@modules$': '<rootDir>/src/modules',
-    '^@modules/(.*)$': '<rootDir>/src/modules/$1',
-    '^@common$': '<rootDir>/src/common',
-    '^@common/(.*)$': '<rootDir>/src/common/$1',
-    '^@database$': '<rootDir>/src/database',
-    '^@extensions/(.*)$': '<rootDir>/src/extensions/$1'
+    '^@business$': '<rootDir>/src/business',
+    '^@business/(.*)$': '<rootDir>/src/business/$1',
+    '^@data$': '<rootDir>/src/data',
+    '^@data/(.*)$': '<rootDir>/src/data/$1',
+    '^@extensions/(.*)$': '<rootDir>/src/extensions/$1',
+    '^@presentation$': '<rootDir>/src/presentation',
+    '^@presentation/(.*)$': '<rootDir>/src/presentation/$1',
+    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
   },
   // disable unit test manual mocks
   modulePathIgnorePatterns: [
@@ -38,7 +38,7 @@ module.exports = {
   coverageDirectory: '<rootDir>/coverage-e2e',
   // coverage is collected from files under src/
   collectCoverageFrom: [
-    '<rootDir>/src/**/*.[tj]s?(x)',
+    '<rootDir>/src/features/**/*.[tj]s?(x)',
   ],
   // and from those files ignore
   coveragePathIgnorePatterns: [

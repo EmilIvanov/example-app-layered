@@ -1,4 +1,4 @@
-import express, { json, RequestHandler } from 'express';
+import express, { json, Request, RequestHandler } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
@@ -7,28 +7,35 @@ import queryType from 'query-types';
 import { NotFound, Conflict, Unauthorized } from 'http-errors';
 import { UnauthorizedError } from 'express-jwt';
 
+import { Environment } from '@utils/environment';
 import {
   onInit as initDatabase,
   create as createDbClient,
   destroy as destroyDbClient,
-  TodosRepository,
-  UsersRepository,
-  RecordNotFound,
-  DuplicateRecord,
-} from '@modules/database';
-import { routes } from '@api';
+  RecordNotFoundError,
+  DuplicateRecordError,
+} from '@data/database';
 import {
   handleError,
-  mapErrors,
+  mapError,
   logRequest,
   validateRequest,
   attachServices,
-  validateAccessToken,
-} from '@common/api';
-import { Environment } from '@common/environment';
-import { JwtService, PasswordService, AuthService } from '@modules/auth';
-import { TodosService } from '@modules/todos';
-import { Services } from '@modules';
+  validateJwt,
+} from '@presentation/middleware';
+import {
+  authRoutes,
+  healthcheckRoutes,
+  helloWorldRoutes,
+  todoRoutes,
+} from '@presentation/routes';
+import { TodosRepository, UsersRepository } from '@data/repositories';
+import {
+  AuthService,
+  JwtService,
+  PasswordService,
+  TodosService,
+} from '@business/services';
 
 export function create(env: Environment) {
   // init modules
@@ -57,7 +64,7 @@ export function create(env: Environment) {
     passwordService
   );
   const todosService = new TodosService(todosRepository);
-  const services: Services = { todosService, authService };
+  const services: Request['services'] = { todosService, authService };
 
   // create the app
   const app = express();
@@ -83,6 +90,16 @@ export function create(env: Environment) {
     queryType.middleware()
   );
 
+  // flatten all routes into an array
+  // alternatively, a separate router instance can be used
+  // for each group of routes (group by prefix)
+  const routes = [
+    ...helloWorldRoutes,
+    ...healthcheckRoutes,
+    ...authRoutes,
+    ...todoRoutes,
+  ];
+
   // register routes
   for (const {
     method,
@@ -93,7 +110,7 @@ export function create(env: Environment) {
     handler,
   } of routes) {
     if (authenticate) {
-      middleware.push(validateAccessToken(env.JWT_SECRET));
+      middleware.push(validateJwt(env.JWT_SECRET));
     }
 
     if (request) {
@@ -109,14 +126,13 @@ export function create(env: Environment) {
 
   // register error handlers
   app.use(
-    mapErrors({
-      [RecordNotFound.name]: NotFound,
-      [DuplicateRecord.name]: Conflict,
+    mapError({
+      [RecordNotFoundError.name]: NotFound,
+      [DuplicateRecordError.name]: Conflict,
       [UnauthorizedError.name]: Unauthorized,
-    })
+    }),
+    handleError(logger)
   );
-
-  app.use(handleError(logger));
 
   // define an app tear down function
   const destroy = async () => {

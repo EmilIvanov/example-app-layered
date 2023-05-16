@@ -16,14 +16,14 @@ module.exports = {
   ],
   // path aliases from tsconfig.json
   moduleNameMapper: {
-    '^@api$': '<rootDir>/src/api',
-    '^@api/(.*)$': '<rootDir>/src/api/$1',
-    '^@modules$': '<rootDir>/src/modules',
-    '^@modules/(.*)$': '<rootDir>/src/modules/$1',
-    '^@common$': '<rootDir>/src/common',
-    '^@common/(.*)$': '<rootDir>/src/common/$1',
-    '^@database$': '<rootDir>/src/database',
+    '^@business$': '<rootDir>/src/business',
+    '^@business/(.*)$': '<rootDir>/src/business/$1',
+    '^@data$': '<rootDir>/src/data',
+    '^@data/(.*)$': '<rootDir>/src/data/$1',
     '^@extensions/(.*)$': '<rootDir>/src/extensions/$1',
+    '^@presentation$': '<rootDir>/src/presentation',
+    '^@presentation/(.*)$': '<rootDir>/src/presentation/$1',
+    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
   },
   // coverage directory
   coverageDirectory: '<rootDir>/coverage',
@@ -35,7 +35,6 @@ module.exports = {
   coveragePathIgnorePatterns: [
     // entry points
     '<rootDir>/src/index.[tj]sx?$',
-    '<rootDir>/src/app.[tj]sx?$',
     // extensions
     '<rootDir>/src/extensions',
     // module indexes
